@@ -60,3 +60,46 @@
     background:#DE1B89;
     cursor:pointer;
 }
+
+/* Positioning buttons without affecting existing content */
+.subscribe-btn {
+    position: absolute;
+    top: 20px;
+    left: 60px;
+    /* background-color: rgb(6, 90, 65); */
+    /* color: white; */
+    background-color: yellow;
+    color:#1F3540;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius:30px;
+}
+
+.auth-buttons {
+    position: absolute;
+    top: 20px;
+    right: 60px;
+    display: flex;
+    gap: 10px; /* Adds space between buttons */
+}
+
+.login-btn {
+    background-color: #DE1B89;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 30px;
+}
+
+
+
+.subscribe-btn:hover,
+.login-btn:hover{
+    opacity: 0.85;
+    transform: scale(1.1); /* Increases button size */
+    transition: transform 0.2s ease-in-out;
+}
