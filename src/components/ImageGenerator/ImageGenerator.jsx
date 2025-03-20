@@ -29,7 +29,7 @@ const ImageGenerator = () => {
                 
             </div>
 
-            <div className="header">AI Image <span>Generator</span></div>
+            <div className="header">Art<span>Nova</span></div>
 
             <div className="img-loading">
                 <div className="image">
