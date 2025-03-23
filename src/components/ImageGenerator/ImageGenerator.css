@@ -1,3 +1,6 @@
+body{
+    background-color: #060320;
+}
 .ai-image-generator {
     display: flex;
     flex-direction: column;
@@ -9,16 +12,18 @@
     gap: 30px;
     overflow: hidden;
     margin-bottom: 14px;
+    background-color: #060320;
 }
 
 .header {
-    font-size: 40px;
+    font-size: 60px;
     font-weight: 500;
     text-align: center;
+    font-family: 'Bookman Old Style';
 }
 
 .header span {
-    color: #DE1889;
+    color: #f429f2;
     font-weight: 600;
 }
 
@@ -67,7 +72,7 @@
     height: 45px;
     font-size: 20px;
     border-radius: 50px;
-    background: #DE1B89;
+    background: #f429f2;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -81,11 +86,12 @@
     left: 20px;
     background-color: yellow;
     font-weight: 600;
-    color: #1F3540;
+    color: #060320;
     border: none;
     padding: 10px 18px;
     cursor: pointer;
     font-size: 18px;
+    /* margin-left: 50px; */
     border-radius: 30px;
 }
 
@@ -98,12 +104,13 @@
 }
 
 .login-btn {
-    background-color: #DE1B89;
+    background-color: #f429f2;
     color: white;
     border: none;
     padding: 10px 18px;
     cursor: pointer;
     font-size: 18px;
+    /* margin-right: 50px; */
     border-radius: 30px;
 }
 
@@ -167,3 +174,49 @@
         padding: 6px 12px;
     }
 }
+
+.image-buttons {
+    display: flex;
+    margin-top: 3px;;
+    gap: 10px; /* Adjust the spacing between buttons */
+    justify-content: center; /* Center align the buttons */
+    align-items: center;
+}
+
+.image-btn {
+    background-color: #ec49ea; /* Pink button background */
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-btn svg {
+    color: #0c054b; /* Blue icon color */
+    font-size: 20px; /* Adjust icon size */
+}
+
+.image-btn:hover {
+    transform: scale(1.1); /* Slight scale effect on hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#tsparticles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+.particles-bg {
+    position: fixed;  /* Ensures particles cover the full screen */
+    width: 100%;
+    height: 100%;
+    z-index: 2;  /* Moves particles behind other elements */
+    top: 0;
+    left: 0;
+}
+
