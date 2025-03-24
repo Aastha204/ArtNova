@@ -115,11 +115,16 @@ body{
 }
 
 .subscribe-btn:hover,
-.login-btn:hover,
-.generate-btn:hover {
+.login-btn:hover {
     opacity: 0.85;
     transform: scale(1.05); /* Subtle effect to prevent large shifts */
     transition: transform 0.2s ease-in-out;
+}
+.generate-btn:hover{
+    opacity: 0.85;
+    transform: scale(1);
+    background-color: #2b062a;
+    box-shadow: 0 0 20px #f429f2, 0 0 20px #f429f2, 0 0 20px #f429f2;
 }
 
 /* Ensures everything fits within the screen */
