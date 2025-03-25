@@ -6,33 +6,55 @@ const SubscribePage = () => {
     {
       name: "Basic",
       price: "$9.99/month",
-      features: ["Access to limited content", "Standard Support", "1 Device"],
+      features: [
+        "Generate up to 50 images/month",
+        "Watermark on images",
+        "Access to limited AI enhancements",
+        "Personal use only",
+        "Standard Support",
+      ],
     },
     {
-      name: "Standard",
+      name: "Intermediate",
       price: "$19.99/month",
-      features: ["Access to most content", "Priority Support", "3 Devices"],
+      features: [
+        "Generate up to 200 images/month",
+        "No watermark",
+        "Advanced AI enhancements",
+        "Limited commercial use",
+        "Priority Support",
+      ],
     },
     {
-      name: "Premium",
+      name: "Advanced",
       price: "$29.99/month",
-      features: ["Unlimited Access", "24/7 Support", "5 Devices"],
+      features: [
+        "Unlimited image generation",
+        "No watermark",
+        "Full AI enhancement features",
+        "Full commercial usage rights",
+        "24/7 Support",
+      ],
     },
   ];
 
   return (
     <div className="subscribe-page">
-      <h2 className="title">Choose Your Subscription</h2>
-      <div className="cards-container">
+      <h2 className="subscribe-title">Choose Your Subscription</h2>
+      <p className="subscribe-subtitle">
+        Unlock exclusive features and enhance your experience with our tailored plans!
+      </p>
+      <div className="subscribe-cards-container">
         {plans.map((plan, index) => (
-          <div className="card" key={index}>
+          <div className="subscribe-card" key={index}>
             <h3>{plan.name}</h3>
-            <p className="price">{plan.price}</p>
+            <p className="subscribe-price">{plan.price}</p>
             <ul>
               {plan.features.map((feature, i) => (
                 <li key={i}>{feature}</li>
               ))}
             </ul>
+            <button className="plan-subscribe-btn">Subscribe</button>
           </div>
         ))}
       </div>

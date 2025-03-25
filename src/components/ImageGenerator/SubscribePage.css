@@ -1,47 +1,100 @@
 .subscribe-page {
     text-align: center;
-    padding: 50px 20px;
+    padding: 15px 20px;
+    height: 90vh; /* Full viewport height */
+    background-color: #060320;
+    /* overflow: hidden; Prevents scrolling */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers everything */
+    align-items: center;
 }
 
-.title {
-    font-size: 28px;
+.subscribe-title {
+    font-size: 32px;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 8px; /* Reduced margin */
 }
 
-.cards-container {
+.subscribe-subtitle {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 25px; /* Reduced space */
+    margin-top: 0;
+}
+
+.subscribe-cards-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px; /* Reduced gap */
     flex-wrap: wrap;
+    max-width: 90vw; /* Prevents overflow */
 }
 
-.card {
+.subscribe-card {
     background: white;
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    width: 280px;
+    width: 260px; /* Adjusted width */
     text-align: center;
     transition: transform 0.2s ease-in-out;
 }
 
-.card:hover {
+.subscribe-card:hover {
     transform: scale(1.05);
 }
 
-.price {
+.subscribe-card h3 {
+    color: black !important;
+    visibility: visible;
+    display: block;
+    font-size: 20px;
+    margin-top: -5px; /* Moves heading up */
+    margin-bottom: 10px; /* Reduced spacing */
+}
+
+.subscribe-price {
     font-size: 20px;
     font-weight: bold;
     color: #007bff;
     margin: 10px 0;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+.subscribe-card ul {
+    list-style-type: disc;  /* Enable bullet points */
+    padding-left: 20px;     /* Add left padding for indentation */
+    text-align: left;       /* Align list items to the left */
+    
 }
 
-ul li {
-    margin: 5px 0;
+.subscribe-card li {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color:black;
+}
+
+.plan-subscribe-btn {
+    background-color: #f429f2; /* Button color */
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Adjusted padding */
+    font-size: 14px; /* Adjusted button size */
+    
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-top: 10px;
+    margin-top: auto;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.plan-subscribe-btn:hover {
+    background-color: #9a1197; 
+    transform: scale(1.05);
+}
+
+.plan-subscribe-btn:active {
+    background-color: #c85ac7;
+    transform: scale(1);
 }
