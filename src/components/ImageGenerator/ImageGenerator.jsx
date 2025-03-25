@@ -80,7 +80,9 @@ const ImageGenerator = () => {
 
             {/* Login & Signup Buttons (Top Right) */}
             <div className="auth-buttons">
-                <button className="login-btn">Log in</button>
+                <button className="login-btn">
+                <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>Log in</Link>
+                </button>
             </div>
 
             <div className="header">Art<span>Nova</span></div>
