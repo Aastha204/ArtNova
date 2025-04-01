@@ -1,5 +1,5 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { FaExpand, FaDownload, FaShareAlt } from 'react-icons/fa';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { FaExpand, FaDownload, FaShareAlt, FaUserCircle } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -8,7 +8,22 @@ import default_image from '../Assets/1.png';
 
 const ImageGenerator = () => {
     const [image_url, setImage_url] = useState("/");
+    const [userEmail, setUserEmail] = useState(null);
     let inputRef = useRef(null);
+
+    useEffect(() => {
+        // Get the logged-in user's email from localStorage
+        const storedEmail = localStorage.getItem('loggedInUserEmail');
+        if (storedEmail) {
+            setUserEmail(storedEmail);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('loggedInUserEmail');
+        setUserEmail(null);
+        window.location.reload(); // Refresh the page after logout
+    };
 
     const particlesInit = useCallback(async (engine) => {
         await loadSlim(engine);
@@ -26,49 +41,6 @@ const ImageGenerator = () => {
         }
     };
 
-    // Open image in a new tab (Expand)
-    const handleExpand = () => {
-        const imgSrc = image_url === "/" ? default_image : image_url;
-        window.open(imgSrc, '_blank');
-    };
-
-    // Download image
-    const handleDownload = () => {
-        const imgSrc = image_url === "/" ? default_image : image_url;
-        const link = document.createElement("a");
-        link.href = imgSrc;
-        link.download = "generated_image.png";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    // Share image via Web Share API or Copy to Clipboard
-    const handleShare = async () => {
-        const imgSrc = image_url === "/" ? default_image : image_url;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: "Check out this AI-generated image!",
-                    text: "Generated using ArtNova",
-                    url: imgSrc,
-                });
-                
-            } catch (error) {
-                console.error("Error sharing:", error);
-            }
-        } else {
-            // Fallback: Copy URL to clipboard
-            try {
-                await navigator.clipboard.writeText(imgSrc);
-                alert("Image link copied to clipboard!");
-            } catch (error) {
-                console.error("Error copying link:", error);
-            }
-        }
-    };
-
     return (
         <div className='ai-image-generator'>
             <Particles className="particles-bg" init={particlesInit} options={particlesOptions} />
@@ -78,11 +50,18 @@ const ImageGenerator = () => {
                 <Link to="/subscribe" style={{ textDecoration: "none", color: "inherit" }}>Subscribe</Link>
             </button>
 
-            {/* Login & Signup Buttons (Top Right) */}
+            {/* Authentication Buttons (Top Right) */}
             <div className="auth-buttons">
-                <button className="login-btn">
-                <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>Log in</Link>
-                </button>
+                {userEmail ? (
+                    <>
+                        <FaUserCircle className="user-icon" size={24} title={userEmail} />
+                        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                    </>
+                ) : (
+                    <button className="login-btn">
+                        <Link to="/login" style={{ textDecoration: "none", color: "inherit" }}>Log in</Link>
+                    </button>
+                )}
             </div>
 
             <div className="header">Art<span>Nova</span></div>
@@ -94,9 +73,9 @@ const ImageGenerator = () => {
                     {/* Pink Overlay with Buttons */}
                     <div className="image-overlay">
                         <div className="image-buttons">
-                            <button className="image-btn" onClick={handleExpand}><FaExpand /></button>
-                            <button className="image-btn" onClick={handleDownload}><FaDownload /></button>
-                            <button className="image-btn" onClick={handleShare}><FaShareAlt /></button>
+                            <button className="image-btn"><FaExpand /></button>
+                            <button className="image-btn"><FaDownload /></button>
+                            <button className="image-btn"><FaShareAlt /></button>
                         </div>
                     </div>
                 </div>
