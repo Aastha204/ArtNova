@@ -1,12 +1,65 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { handleError, handleSuccess } from './utils'
+import "react-toastify/dist/ReactToastify.css";
 import "./signup.css";
 
+const validateName = (name) => /^[a-zA-Z]+(?:[.'-]?[a-zA-Z]+)(?: [a-zA-Z]+(?:[.'-]?[a-zA-Z]+))*$/.test(name);
+const validatePassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,15}$/.test(password);
+const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|yahoo\.com|hotmail\.com|live\.com|icloud\.com)$/.test(email);
+
 const SignupForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [signupInfo, setSignupInfo] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSignupInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const { name, email, password } = signupInfo;
+
+    if (!name || !email || !password) return handleError("Name, email, and password are required.");
+    if (!validateName(name)) return handleError("Invalid name format.");
+    if (!validatePassword(password)) return handleError("Weak password. Must include uppercase, lowercase, number, and special character.");
+    if (!validateEmail(email)) return handleError("Invalid email domain.");
+
+    try {
+      const url = "http://localhost:3001/auth/signup";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signupInfo),
+      });
+
+      const result = await response.json();
+      const { success, message, error } = result;
+
+      if (success) {
+        handleSuccess(message);
+        localStorage.setItem('userType', 'user');
+        localStorage.setItem('loggedInUserName',name);
+        localStorage.setItem('loggedInUserEmail',email);
+        setTimeout(() => {
+          navigate('/verification');
+        }, 1000);
+      } else if (error) {
+        const details = error?.details[0]?.message || "Signup failed.";
+        handleError(details);
+      } else if (!success) {
+        handleError(message);
+      }
+    } catch (err) {
+      handleError("An error occurred during signup. Please try again later.");
+    }
+  };
 
   useEffect(() => {
     const canvas = document.getElementById("snowCanvas");
@@ -30,7 +83,6 @@ const SignupForm = () => {
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
         ctx.fill();
         flake.y += flake.speed;
-
         if (flake.y > height) {
           flake.y = 0;
           flake.x = Math.random() * width;
@@ -48,58 +100,31 @@ const SignupForm = () => {
 
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-  };
-
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
       <div className="inFormBackground">
         <div className="circle"></div>
         <div className="circle"></div>
         <div className="inSignupForm">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSignup}>
             <div className="title">
               <h3>Sign Up</h3>
             </div>
             <div className="SignupinputGroup">
               <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                placeholder="Enter Name"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+              <input type="text" name="name" placeholder="Enter Name" id="name" value={signupInfo.name} onChange={handleChange} />
             </div>
             <div className="SignupinputGroup">
               <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                placeholder="Enter Email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <input type="email" name="email" placeholder="Enter Email" id="email" value={signupInfo.email} onChange={handleChange} />
             </div>
             <div className="SignupinputGroup">
               <label htmlFor="password">Password</label>
               <div className="passwordWrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter Password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <span
-                  className="eyeIcon"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                <input type={showPassword ? "text" : "password"} name="password" placeholder="Enter Password" id="password" value={signupInfo.password} onChange={handleChange} />
+                <span className="eyeIcon" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
@@ -112,7 +137,6 @@ const SignupForm = () => {
       </div>
     </>
   );
-  
 };
 
 export default SignupForm;

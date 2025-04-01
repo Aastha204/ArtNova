@@ -225,3 +225,70 @@ body{
     left: 0;
 }
 
+.auth-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Common button styling for Login, Logout, and Subscribe */
+.auth-buttons button {
+    background-color: #f429f2;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 30px;
+    transition: 0.3s ease;
+}
+
+.auth-buttons button:hover {
+    background-color: #d117d1;
+}
+
+/* Profile icon styling */
+.user-icon {
+    color: white;
+    font-size: 54px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.user-icon:hover {
+    color: #e769e7;
+}
+
+/* Logout button same as login */
+.logout-btn {
+    background-color: #f429f2;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #d117d1;
+}
+
+/* Profile icon styling */
+.user-icon {
+    color: white;
+    font-size: 54px;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+/* Hover effect: subtle scale, color change, and glowing effect */
+.user-icon:hover {
+    color: #e769e7;
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(231, 105, 231, 0.8);
+}
+

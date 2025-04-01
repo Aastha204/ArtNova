@@ -1,11 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./login.css";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+import { handleError, handleSuccess } from "./utils"; 
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [loginInfo, setLoginInfo] = useState({
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    const copyLoginInfo = { ...loginInfo };
+    copyLoginInfo[name] = value;
+    setLoginInfo(copyLoginInfo);
+  };
+
+  console.log("loginInfo -> ", loginInfo);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { email, password } = loginInfo;
+    if (!email || !password) {
+      return handleError("email and password are required");
+    }
+    try {
+      const url = "http://localhost:3001/auth/login";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginInfo)
+
+      });
+      console.log("Login Info being sent:", loginInfo);
+
+      const result = await response.json();
+      const { success, message, jwtToken, name, userId, error } = result;
+      if (success) {
+        handleSuccess(message);
+
+        localStorage.setItem("token", jwtToken);
+        localStorage.setItem("userType", "user");
+        localStorage.setItem("loggedInUserName", name);
+        localStorage.setItem("loggedInUserEmail", email);
+        localStorage.setItem("loggedInUserId", userId);
+        setTimeout(() => {
+          navigate("/userprofile");
+        }, 1000);
+      } else if (error) {
+        const details = error?.details[0].message;
+        handleError(details);
+      } else if (!success) {
+        handleError(message);
+      }
+      console.log(result);
+    } catch (err) {
+      handleError(err);
+    }
+  };
 
   useEffect(() => {
     const canvas = document.getElementById("snowCanvas");
@@ -29,7 +90,6 @@ const LoginForm = () => {
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
         ctx.fill();
         flake.y += flake.speed;
-
         if (flake.y > height) {
           flake.y = 0;
           flake.x = Math.random() * width;
@@ -47,20 +107,15 @@ const LoginForm = () => {
 
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-  };
-
   return (
     <>
+      <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
       <div className="inFormBackground">
         <div className="circle"></div>
         <div className="circle"></div>
         <div className="inLoginForm">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLogin}>
             <div className="title">
               <h3>Login Here</h3>
             </div>
@@ -68,10 +123,11 @@ const LoginForm = () => {
               <label htmlFor="email">Email</label>
               <input
                 type="email"
+                name="email"
                 placeholder="Enter Email"
                 id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={loginInfo.email}
+                onChange={handleChange}
               />
             </div>
             <div className="inputGroup">
@@ -79,15 +135,13 @@ const LoginForm = () => {
               <div className="passwordWrapper">
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
                   placeholder="Enter Password"
                   id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={loginInfo.password}
+                  onChange={handleChange}
                 />
-                <span
-                  className="eyeIcon"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                <span className="eyeIcon" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
@@ -97,7 +151,7 @@ const LoginForm = () => {
             </button>
             <hr className="divider" />
             <p className="signupText">
-              No account? <a href="/signup">Sign up</a>
+              No account? <Link to="/signup">Sign up</Link>
             </p>
           </form>
         </div>
