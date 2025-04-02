@@ -1,6 +1,6 @@
-body{
+/* body{
     background-color: #060320;
-}
+} */
 .ai-image-generator {
     display: flex;
     flex-direction: column;

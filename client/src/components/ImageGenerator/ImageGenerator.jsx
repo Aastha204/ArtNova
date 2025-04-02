@@ -1,28 +1,32 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { FaExpand, FaDownload, FaShareAlt, FaUserCircle } from 'react-icons/fa';
+import { FaExpand, FaDownload, FaShareAlt, FaUserCircle , FaEnvelope} from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
+import Preloader from './Preloader'; // Import Preloader
 import './ImageGenerator.css';
 import default_image from '../Assets/1.png';
 
 const ImageGenerator = () => {
     const [image_url, setImage_url] = useState("/");
     const [userEmail, setUserEmail] = useState(null);
+    const [loading, setLoading] = useState(true);
     let inputRef = useRef(null);
 
     useEffect(() => {
-        // Get the logged-in user's email from localStorage
         const storedEmail = localStorage.getItem('loggedInUserEmail');
         if (storedEmail) {
             setUserEmail(storedEmail);
         }
+
+        // Simulate preloader time
+        setTimeout(() => setLoading(false), 4000);
     }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('loggedInUserEmail');
         setUserEmail(null);
-        window.location.reload(); // Refresh the page after logout
+        window.location.reload();
     };
 
     const particlesInit = useCallback(async (engine) => {
@@ -41,20 +45,24 @@ const ImageGenerator = () => {
         }
     };
 
+    if (loading) {
+        return <Preloader />;
+    }
+
     return (
         <div className='ai-image-generator'>
             <Particles className="particles-bg" init={particlesInit} options={particlesOptions} />
             
-            {/* Subscription Button (Top Left) */}
             <button className="subscribe-btn">
                 <Link to="/subscribe" style={{ textDecoration: "none", color: "inherit" }}>Subscribe</Link>
             </button>
 
-            {/* Authentication Buttons (Top Right) */}
             <div className="auth-buttons">
                 {userEmail ? (
                     <>
-                        <FaUserCircle className="user-icon" size={24} title={userEmail} />
+                    <Link to="/UserProfile">
+                <FaUserCircle className="user-icon" size={24} title={userEmail} />
+            </Link>
                         <button className="logout-btn" onClick={handleLogout}>Logout</button>
                     </>
                 ) : (
@@ -70,7 +78,6 @@ const ImageGenerator = () => {
                 <div className="image-container">
                     <img src={image_url === "/" ? default_image : image_url} alt="Generated" className="generated-image" />
                     
-                    {/* Pink Overlay with Buttons */}
                     <div className="image-overlay">
                         <div className="image-buttons">
                             <button className="image-btn"><FaExpand /></button>
@@ -89,6 +96,10 @@ const ImageGenerator = () => {
                     placeholder='Describe what you want to see'
                 />
                 <div className="generate-btn">Generate</div>
+            </div>
+             {/* Need Help Section */}
+             <div className="help-section">
+                <p>Need help? <Link to="/contact" className="contact-link">Contact us</Link> <FaEnvelope className="contact-icon" /></p>
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ import SubscribePage from "./components/ImageGenerator/SubscribePage"; // Ensure
 import LoginForm from "./components/ImageGenerator/login";
 import SignupForm from "./components/ImageGenerator/signup";
 import OTP from './components/ImageGenerator/OTP';
+import UserProfile from "./components/ImageGenerator/UserProfile";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<LoginForm/>} />
         <Route path="/signup" element={<SignupForm/>} />
         <Route path="/verification" element={<OTP/>}/>
+        <Route path="/UserProfile" element={<UserProfile/>}/>
       </Routes>
     </Router>
   );

@@ -54,7 +54,7 @@ const LoginForm = () => {
         localStorage.setItem("loggedInUserEmail", email);
         localStorage.setItem("loggedInUserId", userId);
         setTimeout(() => {
-          navigate("/userprofile");
+          navigate("/");
         }, 1000);
       } else if (error) {
         const details = error?.details[0].message;
