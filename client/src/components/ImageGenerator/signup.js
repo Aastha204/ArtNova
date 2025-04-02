@@ -14,6 +14,7 @@ const SignupForm = () => {
   const [signupInfo, setSignupInfo] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +29,7 @@ const SignupForm = () => {
     if (!validateName(name)) return handleError("Invalid name format.");
     if (!validatePassword(password)) return handleError("Weak password. Must include uppercase, lowercase, number, and special character.");
     if (!validateEmail(email)) return handleError("Invalid email domain.");
+    setLoading(true); // Start loading
 
     try {
       const url = "http://localhost:3001/auth/signup";
@@ -49,16 +51,20 @@ const SignupForm = () => {
         localStorage.setItem('loggedInUserEmail',email);
         setTimeout(() => {
           navigate('/verification');
+          setLoading(false);
         }, 1000);
       } else if (error) {
         const details = error?.details[0]?.message || "Signup failed.";
+        setLoading(false);
         handleError(details);
       } else if (!success) {
         handleError(message);
+        setLoading(false)
       }
     } catch (err) {
       handleError("An error occurred during signup. Please try again later.");
     }
+    
   };
 
   useEffect(() => {
@@ -104,11 +110,18 @@ const SignupForm = () => {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <div className="inFormBackground">
         <div className="circle"></div>
         <div className="circle"></div>
         <div className="inSignupForm">
-          <form onSubmit={handleSignup}>
+          <form onSubmit={handleSignup}
+            disabled={loading}>
+          
             <div className="title">
               <h3>Sign Up</h3>
             </div>
@@ -118,7 +131,7 @@ const SignupForm = () => {
             </div>
             <div className="SignupinputGroup">
               <label htmlFor="email">Email</label>
-              <input type="email" name="email" placeholder="Enter Email" id="email" value={signupInfo.email} onChange={handleChange} />
+              <input type="email" name="email" placeholder="Enter Email" id="email" value={signupInfo.email} onChange={handleChange} disabled={loading}/>
             </div>
             <div className="SignupinputGroup">
               <label htmlFor="password">Password</label>
@@ -129,7 +142,7 @@ const SignupForm = () => {
                 </span>
               </div>
             </div>
-            <button type="submit" className="submitForm">
+            <button type="submit" className="submitForm" disabled={loading}>
               Sign Up
             </button>
           </form>

@@ -17,11 +17,14 @@
   font-size: 40px;
   cursor: pointer;
   color: #1981a0;
-  transition: 0.3s;
+  transition: 0.3s ease-in-out;
 }
 
 .home-icon:hover {
   color: #fdfcfc;
+  transform: scale(1.7); /* Slightly enlarges the icon */
+  box-shadow: 0 0 12px rgba(58, 109, 238, 0.8), 
+              0 0 20px rgba(108, 185, 227, 0.6); /* Blue glowing effect */
 }
 
 .user-profile {

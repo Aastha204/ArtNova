@@ -10,6 +10,7 @@ const OTPForm = () => {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (timer > 0) {
@@ -19,6 +20,7 @@ const OTPForm = () => {
   }, [timer]);
 
   const handleChange = (e) => setOtp(e.target.value);
+
 
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ const OTPForm = () => {
       handleError("Something went wrong! Start again");
       return;
     }
-
+    setLoading(true); // Start loading
     try {
       const response = await fetch("http://localhost:3001/auth/verify-otp", {
         method: "POST",
@@ -45,8 +47,10 @@ const OTPForm = () => {
 
       if (result.success) {
         handleSuccess(result.message);
+        setLoading(false);
         setTimeout(() => navigate("/login"), 1000);
       } else {
+        setLoading(false);
         handleError(result.message);
       }
     } catch (err) {
@@ -131,6 +135,11 @@ const OTPForm = () => {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
       <div className="inFormBackground">
         <div className="circle"></div>
         <div className="circle"></div>

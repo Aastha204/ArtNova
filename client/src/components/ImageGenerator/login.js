@@ -12,6 +12,7 @@ const LoginForm = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,6 +32,38 @@ const LoginForm = () => {
     if (!email || !password) {
       return handleError("email and password are required");
     }
+    setLoading(true); // Start loading
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginInfo),
+      });
+
+      const result = await response.json();
+      const { success, message, jwtToken, name, userId, error } = result;
+
+      if (success) {
+        handleSuccess(message);
+        localStorage.setItem("token", jwtToken);
+        localStorage.setItem("userType", "user");
+        localStorage.setItem("loggedInUserName", name);
+        localStorage.setItem("loggedInUserEmail", loginInfo.email);
+        localStorage.setItem("loggedInUserId", userId);
+
+        setTimeout(() => {
+          navigate("/");
+          setLoading(false); // Stop loading
+        }, 1000);
+      } else {
+        handleError(error?.details?.[0]?.message || message);
+        setLoading(false); // Stop loading
+      }
+    } catch (err) {
+      handleError(err.message);
+      setLoading(false); // Stop loading
+    }
+  
     try {
       const url = "http://localhost:3001/auth/login";
       const response = await fetch(url, {
@@ -115,7 +148,10 @@ const LoginForm = () => {
         <div className="circle"></div>
         <div className="circle"></div>
         <div className="inLoginForm">
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin}
+           disabled={loading}
+          >
+         
             <div className="title">
               <h3>Login Here</h3>
             </div>
@@ -128,6 +164,7 @@ const LoginForm = () => {
                 id="email"
                 value={loginInfo.email}
                 onChange={handleChange}
+                disabled={loading}
               />
             </div>
             <div className="inputGroup">
@@ -146,9 +183,10 @@ const LoginForm = () => {
                 </span>
               </div>
             </div>
-            <button type="submit" className="submitForm">
-              Log In
+            <button type="submit" className="submitForm" disabled={loading}>
+              {loading ? <span className="spinner"></span> : "Log In"}
             </button>
+            
             <hr className="divider" />
             <p className="signupText">
               No account? <Link to="/signup">Sign up</Link>

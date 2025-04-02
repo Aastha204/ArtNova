@@ -1,57 +1,90 @@
+.home-button1 {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.home-button1 :hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0px 0px 10px rgba(244, 41, 242, 0.8));
+}
 .subscribe-page {
     text-align: center;
     padding: 15px 20px;
-    height: 90vh; /* Full viewport height */
+    height: 90vh;
     background-color: #060320;
-    /* overflow: hidden; Prevents scrolling */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers everything */
+    justify-content: center;
     align-items: center;
 }
 
 .subscribe-title {
     font-size: 32px;
     font-weight: bold;
-    margin-bottom: 8px; /* Reduced margin */
+    margin-bottom: 8px;
+    color: white;
 }
 
-.subscribe-subtitle {
-    font-size: 18px;
+/* Typewriter Effect */
+@keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.typewriter {
+    font-size: 20px;
     color: #ffffff;
-    margin-bottom: 25px; /* Reduced space */
-    margin-top: 0;
+    overflow: hidden;
+    border-right: 2px solid white;
+    white-space: nowrap;
+    margin-bottom: 40px;
+    display: inline-block;
+    animation: typewriter 7s steps(40, end) infinite alternate;
 }
 
 .subscribe-cards-container {
     display: flex;
     justify-content: center;
-    gap: 15px; /* Reduced gap */
+    gap: 50px;
     flex-wrap: wrap;
-    max-width: 90vw; /* Prevents overflow */
+    max-width: 90vw;
 }
 
 .subscribe-card {
     background: white;
-    padding: 15px; /* Reduced padding */
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    width: 260px; /* Adjusted width */
+    width: 280px;
+    height: 300px; /* Increased height */
     text-align: center;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Glow effect on hover */
 .subscribe-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
+    box-shadow: 0px 0px 15px 5px rgba(244, 41, 242, 0.8);
 }
 
 .subscribe-card h3 {
-    color: black !important;
-    visibility: visible;
-    display: block;
-    font-size: 20px;
-    margin-top: -5px; /* Moves heading up */
-    margin-bottom: 10px; /* Reduced spacing */
+    color: black;
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
 .subscribe-price {
@@ -62,39 +95,180 @@
 }
 
 .subscribe-card ul {
-    list-style-type: disc;  /* Enable bullet points */
-    padding-left: 20px;     /* Add left padding for indentation */
-    text-align: left;       /* Align list items to the left */
-    
+    list-style-type: disc;
+    padding-left: 20px;
+    text-align: left;
 }
 
 .subscribe-card li {
     margin-bottom: 8px;
     font-size: 16px;
-    color:black;
+    color: black;
+}
+
+/* Styling for react-wavify */
+.wave-container {
+    position: absolute;
+    top: 80%;
+    left: -10%;
+    width: 120%;
+    height: 90px;
+    opacity: 0.3;  /* Lower opacity */
+    transform: rotate(-10deg); /* Tilted */
+    overflow: hidden;
 }
 
 .plan-subscribe-btn {
-    background-color: #f429f2; /* Button color */
+    background-color: #632076;
     color: white;
     border: none;
-    padding: 10px 20px; /* Adjusted padding */
-    font-size: 14px; /* Adjusted button size */
-    
+    padding: 12px 25px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 8px;
-    margin-top: 10px;
     margin-top: auto;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .plan-subscribe-btn:hover {
-    background-color: #9a1197; 
+    background-color: #9a1197;
     transform: scale(1.05);
 }
 
 .plan-subscribe-btn:active {
     background-color: #c85ac7;
     transform: scale(1);
+}
+.subscribe-title {
+    font-size: 80px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    color: white;
+    
+}
+
+.key {
+    font-size: 50px;
+    display: inline-block;
+    transition: transform 0.5s;
+}
+
+/* Keyboard Animation */
+@keyframes pressDown {
+    30%, 40%, 100% { transform: translateY(0); }
+    35% { transform: translateY(10px); }
+}
+
+.key:nth-child(1) { animation: pressDown 2s infinite; }
+.key:nth-child(2) { animation: pressDown 3s infinite; }
+.key:nth-child(3) { animation: pressDown 4s infinite; }
+.key:nth-child(4) { animation: pressDown 2.5s infinite; }
+.key:nth-child(5) { animation: pressDown 2.5s infinite; }
+.key:nth-child(6) { animation: pressDown 3.5s infinite; }
+.key:nth-child(7) { animation: pressDown 2.2s infinite; }
+.key:nth-child(8) { animation: pressDown 3.2s infinite; }
+.key:nth-child(9) { animation: pressDown 3.6s infinite; }
+.key:nth-child(10) { animation: pressDown 4.1s infinite; }
+.key:nth-child(11) { animation: pressDown 4.4s infinite; }
+.key:nth-child(12) { animation: pressDown 4.9s infinite; }
+.key:nth-child(13) { animation: pressDown 5.3s infinite; }
+.key:nth-child(14) { animation: pressDown 5.6s infinite; }
+.key:nth-child(15) { animation: pressDown 5.8s infinite; }
+.key:nth-child(16) { animation: pressDown 6.1s infinite; }
+
+/* Responsive Design */
+
+/* For smaller tablets and large mobile screens */
+/* Responsive Design */
+
+/* For tablets and smaller screens */
+@media (max-width: 1024px) {
+    .subscribe-title {
+        font-size: 50px;
+    }
+
+    .typewriter {
+        font-size: 16px;
+    }
+
+    .subscribe-cards-container {
+        gap: 30px;
+    }
+
+    .subscribe-card {
+        width: 240px;
+        height: auto;
+    }
+}
+
+/* For mobile screens */
+@media (max-width: 768px) {
+    .subscribe-page {
+        padding: 10px;
+        height: auto;
+    }
+
+    .subscribe-title {
+        font-size: 40px;
+        text-align: center;
+    }
+
+    .typewriter {
+        font-size: 14px;
+        text-align: center;
+        max-width: 90%;
+        white-space: normal; /* Allow wrapping */
+    }
+
+    .subscribe-cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .subscribe-card {
+        width: 90%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .wave-container {
+        top: 70%;
+        left: -5%;
+        width: 110%;
+        height: 70px;
+    }
+
+    .home-button1 {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+/* For very small screens (phones) */
+@media (max-width: 480px) {
+    .subscribe-title {
+        font-size: 32px;
+        text-align: center;
+    }
+
+    .typewriter {
+        font-size: 12px;
+        max-width: 95%;
+        text-align: center;
+    }
+
+    .subscribe-card {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .wave-container {
+        top: 75%;
+        height: 50px;
+    }
 }
