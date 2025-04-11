@@ -1,6 +1,10 @@
-/* body{
-    background-color: #060320;
-} */
+/* html, body {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+
 .ai-image-generator {
     display: flex;
     flex-direction: column;
@@ -10,9 +14,12 @@
     width: 90vw; /* Ensures it stays within the screen */
     max-width: 1200px; /* Prevents overflow on large screens */
     gap: 30px;
-    overflow: hidden;
+    /* overflow-x: hidden; */
+    overflow-y: auto;
     margin-bottom: 14px;
     background-color: #060320;
+    /* min-height: 100vh; Ensure it takes at least the full screen height */
+    overflow: visible;
 }
 
 .header {
@@ -95,13 +102,13 @@
     border-radius: 30px;
 }
 
-.auth-buttons {
+/* .auth-buttons {
     position: absolute;
     top: 20px;
     right: 20px;
     display: flex;
     gap: 10px;
-}
+} */
 
 .login-btn {
     background-color: #f429f2;
@@ -291,4 +298,40 @@
     transform: scale(1.1);
     box-shadow: 0 0 12px rgba(231, 105, 231, 0.8);
 }
+/* Help Section Styling */
+.help-section {
+    position: absolute;
+    bottom: 30px; /* Move it a little up from the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    color: white; /* Match your theme */
+    text-align: center;
+    align-items: center; /* Ensures everything stays aligned */
+    gap: 5px; /* Adds spacing between text and icon */
+}
 
+/* Contact Text Styling */
+.contact-link {
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+    color: #f429f2; /* Highlight color */
+    transition: color 0.3s ease-in-out;
+    font-size: 20px;
+    display: inline-flex;
+    
+}
+
+/* Contact Text Hover Effect */
+.contact-link:hover {
+    color: #edd7ec; /* Darker shade on hover */
+}
+
+/* Envelope Icon Styling */
+.contact-icon {
+    font-size: 2px;
+    color: #f429f2;
+    display: inline-flex; /* Align with text */
+    align-items: center;
+    margin-top: 2px; /* Slight adjustment if needed */
+}

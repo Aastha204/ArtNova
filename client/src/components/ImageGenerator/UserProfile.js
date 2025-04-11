@@ -51,15 +51,39 @@ const UserProfile = () => {
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const options = { maxSizeMB: 0.5, maxWidthOrHeight: 600, useWebWorker: true };
-      const compressedFile = await imageCompression(file, options);
-      const imageUrl = URL.createObjectURL(compressedFile);
+    if (!file) return;
   
-      setUserData((prev) => ({ ...prev, profilePic: imageUrl }));
-      localStorage.setItem("profilePic", imageUrl);
+    // Show preview instantly
+    const localUrl = URL.createObjectURL(file);
+    setUserData((prev) => ({ ...prev, profilePic: localUrl }));
+  
+    const formData = new FormData();
+    formData.append("profile", file);
+    formData.append("email", userData.email); // Optional: Pass user email
+    formData.append("name", userData.name);   // Optional
+  
+    try {
+      const res = await fetch("http://localhost:3001/api/upload-profile", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await res.json();
+  
+      if (data.imageUrl) {
+        setUserData((prev) => ({ ...prev, profilePic: data.imageUrl }));
+        localStorage.setItem("profilePic", data.imageUrl);
+        toast.success("Profile picture updated!");
+      } else {
+        toast.error("Upload failed. No image URL received.");
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Image upload failed!");
     }
   };
+  
+  
 
   const handleDeleteProfilePic = () => {
     setUserData((prev) => ({ ...prev, profilePic: "https://via.placeholder.com/150" }));

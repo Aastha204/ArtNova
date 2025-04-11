@@ -17,7 +17,7 @@
 
 .home-button1 :hover {
     transform: scale(1.1);
-    filter: drop-shadow(0px 0px 10px rgba(244, 41, 242, 0.8));
+    filter: drop-shadow(0px 0px 10px rgba(90, 216, 255, 0.8));
 }
 .subscribe-page {
     text-align: center;
@@ -78,7 +78,7 @@
 /* Glow effect on hover */
 .subscribe-card:hover {
     transform: scale(1.08);
-    box-shadow: 0px 0px 15px 5px rgba(244, 41, 242, 0.8);
+    box-shadow: 0px 0px 15px 5px rgba(79, 167, 255, 0.8);
 }
 
 .subscribe-card h3 {

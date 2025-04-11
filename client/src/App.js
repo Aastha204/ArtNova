@@ -13,6 +13,7 @@ function App() {
   return (
     <Router>
       <Routes>
+     
         {/* Show ImageGenerator on the Home Route ("/") */}
         <Route path="/" element={<ImageGenerator />} />
 

@@ -39,8 +39,13 @@ const userSchema = new Schema({
     age: {
         type: Number,
         default: null
+    },
+    profilePic: {
+        type: String,
+        default: ''
     }
-});
+}, { timestamps: true }); // Adds createdAt and updatedAt
+
 
 // Apply the auto-incrementing plugin to the user schema
 userSchema.plugin(AutoIncrement, { inc_field: 'userId' });

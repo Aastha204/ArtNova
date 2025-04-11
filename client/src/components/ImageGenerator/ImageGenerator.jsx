@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { FaExpand, FaDownload, FaShareAlt, FaUserCircle, FaEnvelope } from "react-icons/fa";
+import { FaExpand, FaDownload, FaShareAlt, FaUserCircle, FaQuestionCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
@@ -161,14 +161,14 @@ const ImageGenerator = () => {
 
             {/* Need Help Section */}
             <div className="help-section">
-                <p>
-                    Need help?{" "}
-                    <Link to="/contact" className="contact-link">
-                        Contact us
-                    </Link>{" "}
-                    <FaEnvelope className="contact-icon" />
-                </p>
-            </div>
+    <p>
+        Need help?{" "}
+        <Link to="/contact" className="contact-link">
+            Contact us
+        </Link>{" "}
+        <FaQuestionCircle className="help-icon" />
+    </p>
+</div>
         </div>
     );
 };
