@@ -1,42 +1,41 @@
-// server/routes/userRoutes.js
 const express = require('express');
-const UserModel = require('../Models/User'); // Adjust path as necessary
+const UserModel = require('../Models/User'); // Adjust the path as needed
 const router = express.Router();
 
 // Route to fetch user details by email
 router.get('/userProfile', async (req, res) => {
   const { email } = req.query;
   console.log("Received email:", email);
-  
+
   try {
     const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    console.log("User DOB:", user.dob);
+
     res.json({
       name: user.name,
       email: user.email,
       phoneNo: user.phoneNo,
-      age: user.age,
-      gender: user.gender,
       dob: user.dob,
-      address: user.address,
+      createdAt: user.createdAt,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
 // Route to update user details
-router.put('/userProfile', async (req, res) => {
-  const { email, phone, age, address, gender, dob } = req.body;
+router.put('/updateUser', async (req, res) => {
+  const { email, name, phoneNo, dob } = req.body;
 
   try {
-    // Find and update user by email
     const user = await UserModel.findOneAndUpdate(
       { email },
-      { phoneNo: phone, age, address, gender, dob },
+      { name, phoneNo, dob },
       { new: true }
     );
 
@@ -46,6 +45,7 @@ router.put('/userProfile', async (req, res) => {
 
     res.json({ message: 'User details updated successfully', user });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });

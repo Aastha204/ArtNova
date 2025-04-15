@@ -24,25 +24,10 @@ const userSchema = new Schema({
         type: String,
         default: ''
     },
-    gender: {
-        type: String,
-        default: ''
-    },
-    address: {
-        type: String,
-        default: ''
-    },
+    
     dob: {
         type: Date,
         default: null
-    },
-    age: {
-        type: Number,
-        default: null
-    },
-    profilePic: {
-        type: String,
-        default: ''
     }
 }, { timestamps: true }); // Adds createdAt and updatedAt
 

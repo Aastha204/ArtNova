@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    overflow: hidden; /* Ensures waves don’t overflow */
+    overflow: hidden; 
     transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
 }
 

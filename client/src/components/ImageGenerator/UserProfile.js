@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Facebook, Twitter, Instagram, Edit, Delete, Home, Check } from "@mui/icons-material";
 import imageCompression from "browser-image-compression";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import Wavify from "react-wavify"; // Import Wavify
-
+import Wavify from "react-wavify";
 import "./UserProfile.css";
 
 const jokes = [
@@ -25,97 +25,126 @@ const jokes = [
   "I asked AI to make a playlist. Now I’m stuck in an infinite loop of lo-fi beats."
 ];
 
-const UserProfile = () => {
-  const storedData = JSON.parse(localStorage.getItem("userData")) || {
-    name: "Hembo Tingor",
-    email: "rntng@gmail.com",
-    dob: "1995-05-15",
-    account: "Created on 01-01-2024",
-    profilePic: localStorage.getItem("profilePic") || "https://via.placeholder.com/150",
-  };
 
-  const [userData, setUserData] = useState(storedData);
+const UserProfile = () => {
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    email: "",
+    phoneNo: "",
+    dob: "",
+    createdAt: "",
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [currentJoke, setCurrentJoke] = useState(jokes[0]);
+  const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "https://via.placeholder.com/150");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.setItem("userData", JSON.stringify(userData));
-  }, [userData]);
+    const userEmail = localStorage.getItem("loggedInUserEmail");
 
-  useEffect(() => {
-    const jokeInterval = setInterval(() => {
-      setCurrentJoke(jokes[Math.floor(Math.random() * jokes.length)]);
-    }, 5000);
-    return () => clearInterval(jokeInterval);
+    if (userEmail) {
+      fetch(`http://localhost:3001/api/userProfile?email=${userEmail}`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch user data");
+          return res.json();
+        })
+        .then((data) => {
+          console.log("Fetched user data:", data); // ✅ For debugging
+          setUserDetails({
+            ...data,
+            dob: data.dob ? new Date(data.dob).toISOString().split("T")[0] : "",
+            createdAt: data.createdAt,
+          });
+        })
+        .catch((err) => {
+          toast.error("Failed to fetch user data");
+          console.error(err);
+        });
+    }
   }, []);
 
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-  
-    // Show preview instantly
-    const localUrl = URL.createObjectURL(file);
-    setUserData((prev) => ({ ...prev, profilePic: localUrl }));
-  
-    const formData = new FormData();
-    formData.append("profile", file);
-    formData.append("email", userData.email); // Optional: Pass user email
-    formData.append("name", userData.name);   // Optional
-  
-    try {
-      const res = await fetch("http://localhost:3001/api/upload-profile", {
-        method: "POST",
-        body: formData,
-      });
-  
-      const data = await res.json();
-  
-      if (data.imageUrl) {
-        setUserData((prev) => ({ ...prev, profilePic: data.imageUrl }));
-        localStorage.setItem("profilePic", data.imageUrl);
-        toast.success("Profile picture updated!");
-      } else {
-        toast.error("Upload failed. No image URL received.");
-      }
-    } catch (error) {
-      console.error("Upload failed:", error);
-      toast.error("Image upload failed!");
-    }
-  };
-  
-  
-
-  const handleDeleteProfilePic = () => {
-    setUserData((prev) => ({ ...prev, profilePic: "https://via.placeholder.com/150" }));
-    localStorage.setItem("profilePic", "https://via.placeholder.com/150");
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentJoke(jokes[Math.floor(Math.random() * jokes.length)]);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleEditClick = () => {
+    toast.info("You can now edit your profile");
     setIsEditing(true);
-  };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    localStorage.setItem("userData", JSON.stringify(userData));
-    toast.success("User details updated successfully!");
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+    setUserDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/updateUser", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: userDetails.email,
+          phoneNo: userDetails.phoneNo,
+          dob: userDetails.dob,
+          name: userDetails.name,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update user details");
+      }
+
+      const data = await response.json();
+      toast.success("Profile updated successfully!");
+      setIsEditing(false);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating profile");
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const compressedFile = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 600 });
+    const formData = new FormData();
+    formData.append("profile", compressedFile);
+    formData.append("email", userDetails.email);
+
+    const res = await fetch("http://localhost:3001/api/upload-profile", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (data.imageUrl) {
+      setProfilePic(data.imageUrl);
+      localStorage.setItem("profilePic", data.imageUrl);
+      toast.success("Profile picture updated!");
+    } else {
+      toast.error("Upload failed");
+    }
+  };
+
+  const handleDeleteProfilePic = () => {
+    setProfilePic("https://via.placeholder.com/150");
+    localStorage.setItem("profilePic", "https://via.placeholder.com/150");
   };
 
   return (
     <div className="page-container">
-      <Home className="home-icon" onClick={() => window.location.href = "/"} />
+      <Home className="home-icon" onClick={() => navigate("/")} />
       <h1 className="masked-text">USER PROFILE</h1>
 
-      
-      
       <div className="user-profile">
         <div className="profile-side">
           <label htmlFor="upload-image" className="profile-image-container">
-            <img src={userData.profilePic} alt="User" className="profile-image" />
+            <img src={profilePic} alt="User" className="profile-image" />
             <input type="file" id="upload-image" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
           </label>
           <div className="profile-buttons">
@@ -134,57 +163,47 @@ const UserProfile = () => {
           </div>
 
           <form className={`user-details ${isEditing ? "editing-mode" : ""}`}>
-  <div className="form-group">
-    <label>Name:</label>
-    <input type="text" name="name" value={userData.name} onChange={handleChange} disabled={!isEditing} />
-  </div>
-  <div className="form-group">
-    <label>Email:</label>
-    <input type="email" name="email" value={userData.email} onChange={handleChange} disabled={!isEditing} />
-  </div>
-  <div className="form-group">
-    <label>DOB:</label>
-    <input type="date" name="dob" value={userData.dob} onChange={handleChange} disabled={!isEditing} />
-  </div>
-  <div className="form-group">
-    <label>Account Info:</label>
-    <input type="text" value={userData.account} disabled />
-  </div>
-</form>
-
+            <div className="form-group">
+              <label>Name:</label>
+              <input type="text" name="name" value={userDetails.name} onChange={handleChange} disabled={!isEditing} />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input type="email" name="email" value={userDetails.email} onChange={handleChange} disabled/>
+            </div>
+            <div className="form-group">
+              <label>DOB:</label>
+              <input type="date" name="dob" value={userDetails.dob} onChange={handleChange} disabled={!isEditing} />
+            </div>
+            <div className="form-group">
+              <label>Account Created on:</label>
+              <input type="text" name="createdAt" value={new Date(userDetails.createdAt).toLocaleDateString()} disabled />
+            </div>
+          </form>
 
           <div className="social-icons">
             <Facebook className="social-icon" />
             <Twitter className="social-icon" />
             <Instagram className="social-icon" />
           </div>
-          <Wavify
-  fill="rgba(125, 146, 209, 0.17)"
-  options={{
-   
-    height: 70,
-    amplitude: 20,
-    speed: 0.25,
-    points: 3,
-  }}
-  style={{
-    position: "absolute",
-    top: 500, // Keeps the wave effect at a specific vertical position
-    left: "-50%", // Moves the wave towards the left side
-    right: "auto", // Ensures it doesn't shift back to the right
-    width: "420%", // Adjust the width to make it fit properly
-    zIndex: -1,
 
-  }}
-/>
+          <Wavify
+            fill="rgba(125, 146, 209, 0.17)"
+            options={{ height: 70, amplitude: 20, speed: 0.25, points: 3 }}
+            style={{
+              position: "absolute",
+              top: 500,
+              left: "-50%",
+              width: "420%",
+              zIndex: -1,
+            }}
+          />
         </div>
       </div>
-      {/* Add the Wavify background component */}
-      
+
       <div className="ai-facts">{currentJoke}</div>
       <ToastContainer />
     </div>
-    
   );
 };
 
