@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Wavify from "react-wavify";
 import "./UserProfile.css";
 
+
 const jokes = [
   "AI will never replace humans... until it learns sarcasm.",
   "I asked ChatGPT for a joke, and now it writes my stand-up routine.",
@@ -41,7 +42,6 @@ const UserProfile = () => {
   const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "https://via.placeholder.com/150");
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const userEmail = localStorage.getItem("loggedInUserEmail");
 
@@ -52,19 +52,22 @@ const UserProfile = () => {
           return res.json();
         })
         .then((data) => {
+          console.log("Fetched user data:", data); // ✅ For debugging
+        
+          // Save profilePic in localStorage & state
+          if (data.profilePic) {
+            setProfilePic(data.profilePic);
+            localStorage.setItem("profilePic", data.profilePic);
+            console.log("Profile pic URL:", data.profilePic);
+
+          }
+        
           setUserDetails({
             ...data,
             dob: data.dob ? new Date(data.dob).toISOString().split("T")[0] : "",
             createdAt: data.createdAt,
           });
-
-          // If image exists in data, set it
-          if (data.profileImage) {
-            const imageUrl = `http://localhost:3001/${data.profileImage.replace(/\\/g, '/')}`;
-            setProfilePic(imageUrl);
-            localStorage.setItem("profilePic", imageUrl);
-          }
-        })
+        })        
         .catch((err) => {
           toast.error("Failed to fetch user data");
           console.error(err);
@@ -144,23 +147,23 @@ const UserProfile = () => {
 
   const handleDeleteProfilePic = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/delete-image/${userDetails._id}`, {
+      const response = await fetch(`http://localhost:3001/api/delete-profile-pic`, {
         method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userDetails.email }),
       });
-
-      const data = await res.json();
-      if (res.ok) {
-        setProfilePic("https://via.placeholder.com/150");
-        localStorage.setItem("profilePic", "https://via.placeholder.com/150");
-        toast.success("Profile picture deleted!");
-      } else {
-        toast.error(data.message || "Failed to delete image");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Error deleting image");
+  
+      if (!response.ok) throw new Error("Failed to delete profile picture");
+  
+      setProfilePic("https://via.placeholder.com/150");
+      localStorage.setItem("profilePic", "https://via.placeholder.com/150");
+      toast.success("Profile picture deleted");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting profile picture");
     }
   };
+  
 
   return (
     <div className="page-container">

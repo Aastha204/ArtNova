@@ -24,6 +24,10 @@ const userSchema = new Schema({
         type: String,
         default: ''
     },
+    profilePic: {
+        type: String,  // URL for the profile picture
+        default: 'https://via.placeholder.com/150',  // Default placeholder image URL
+      },
     
     dob: {
         type: Date,
@@ -33,8 +37,8 @@ const userSchema = new Schema({
         type: String,
         default: ''
     }
-
-}, { timestamps: true }); // Adds createdAt and updatedAt
+}, { timestamps: true }
+); // Adds createdAt and updatedAt
 
 
 // Apply the auto-incrementing plugin to the user schema
