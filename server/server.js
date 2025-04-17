@@ -21,7 +21,7 @@ mongoose.connect("mongodb://localhost:27017/imagegenerator", { useNewUrlParser: 
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error: ', err));
 
-  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use('/auth',AuthRouter)
 app.use('/api', ImageUploadRouter);

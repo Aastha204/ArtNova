@@ -25,15 +25,17 @@ const jokes = [
   "I asked AI to make a playlist. Now I’m stuck in an infinite loop of lo-fi beats."
 ];
 
-
 const UserProfile = () => {
   const [userDetails, setUserDetails] = useState({
+    _id: "",
     name: "",
     email: "",
     phoneNo: "",
     dob: "",
     createdAt: "",
+    profileImage: ""
   });
+
   const [isEditing, setIsEditing] = useState(false);
   const [currentJoke, setCurrentJoke] = useState(jokes[0]);
   const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || "https://via.placeholder.com/150");
@@ -50,12 +52,18 @@ const UserProfile = () => {
           return res.json();
         })
         .then((data) => {
-          console.log("Fetched user data:", data); // ✅ For debugging
           setUserDetails({
             ...data,
             dob: data.dob ? new Date(data.dob).toISOString().split("T")[0] : "",
             createdAt: data.createdAt,
           });
+
+          // If image exists in data, set it
+          if (data.profileImage) {
+            const imageUrl = `http://localhost:3001/${data.profileImage.replace(/\\/g, '/')}`;
+            setProfilePic(imageUrl);
+            localStorage.setItem("profilePic", imageUrl);
+          }
         })
         .catch((err) => {
           toast.error("Failed to fetch user data");
@@ -98,7 +106,6 @@ const UserProfile = () => {
         throw new Error("Failed to update user details");
       }
 
-      const data = await response.json();
       toast.success("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
@@ -111,29 +118,48 @@ const UserProfile = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    const compressedFile = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 600 });
-    const formData = new FormData();
-    formData.append("profile", compressedFile);
-    formData.append("email", userDetails.email);
+    const compressedFile = await imageCompression(file, {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 600,
+    });
 
-    const res = await fetch("http://localhost:3001/api/upload-profile", {
-      method: "POST",
+    const formData = new FormData();
+    formData.append("image", compressedFile);
+
+    const res = await fetch(`http://localhost:3001/api/upload-image/${userDetails._id}`, {
+      method: "PUT",
       body: formData,
     });
 
     const data = await res.json();
-    if (data.imageUrl) {
-      setProfilePic(data.imageUrl);
-      localStorage.setItem("profilePic", data.imageUrl);
+    if (data.profileImage) {
+      const imageUrl = `http://localhost:3001/${data.profileImage}`;
+      setProfilePic(imageUrl);
+      localStorage.setItem("profilePic", imageUrl);
       toast.success("Profile picture updated!");
     } else {
       toast.error("Upload failed");
     }
   };
 
-  const handleDeleteProfilePic = () => {
-    setProfilePic("https://via.placeholder.com/150");
-    localStorage.setItem("profilePic", "https://via.placeholder.com/150");
+  const handleDeleteProfilePic = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/api/delete-image/${userDetails._id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setProfilePic("https://via.placeholder.com/150");
+        localStorage.setItem("profilePic", "https://via.placeholder.com/150");
+        toast.success("Profile picture deleted!");
+      } else {
+        toast.error(data.message || "Failed to delete image");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error deleting image");
+    }
   };
 
   return (
@@ -145,7 +171,13 @@ const UserProfile = () => {
         <div className="profile-side">
           <label htmlFor="upload-image" className="profile-image-container">
             <img src={profilePic} alt="User" className="profile-image" />
-            <input type="file" id="upload-image" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
+            <input
+              type="file"
+              id="upload-image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: "none" }}
+            />
           </label>
           <div className="profile-buttons">
             <Edit className="edit-icon" onClick={() => document.getElementById("upload-image").click()} />
@@ -169,7 +201,7 @@ const UserProfile = () => {
             </div>
             <div className="form-group">
               <label>Email:</label>
-              <input type="email" name="email" value={userDetails.email} onChange={handleChange} disabled/>
+              <input type="email" name="email" value={userDetails.email} disabled />
             </div>
             <div className="form-group">
               <label>DOB:</label>
@@ -177,7 +209,7 @@ const UserProfile = () => {
             </div>
             <div className="form-group">
               <label>Account Created on:</label>
-              <input type="text" name="createdAt" value={new Date(userDetails.createdAt).toLocaleDateString()} disabled />
+              <input type="text" value={new Date(userDetails.createdAt).toLocaleDateString()} disabled />
             </div>
           </form>
 

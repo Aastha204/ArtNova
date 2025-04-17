@@ -28,7 +28,12 @@ const userSchema = new Schema({
     dob: {
         type: Date,
         default: null
+    },
+    profileImage: {
+        type: String,
+        default: ''
     }
+
 }, { timestamps: true }); // Adds createdAt and updatedAt
 
 
