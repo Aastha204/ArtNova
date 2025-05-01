@@ -8,10 +8,91 @@ import "./ImageGenerator.css";
 import default_image from "../Assets/1.png";
 
 const ImageGenerator = () => {
+
     const [image_url, setImage_url] = useState("/");
     const [userEmail, setUserEmail] = useState(null);
     const [loading, setLoading] = useState(true);
     let inputRef = useRef(null);
+
+    // const imageGenerator = async () => {
+    //     const prompt = inputRef.current.value.trim();
+    //     if (prompt === "") {
+    //         alert("Please provide a valid prompt.");
+    //         return;
+    //     }
+    
+    //     const requestBody = {
+    //         prompt: prompt,
+    //         n: 1,
+    //         size: "512x512",
+    //         model: "dall-e-2",
+    //     };
+    //     console.log("Request Body: ", requestBody);
+    
+    //     try {
+    //         const response = await fetch("https://api.openai.com/v1/images/generations", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 "Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,
+    //                 "User-Agent": "Chrome",
+    //             },
+    //             body: JSON.stringify(requestBody),
+    //         });
+    
+    //         if (!response.ok) {
+    //             const errorDetails = await response.json();
+    //             alert(`Error: ${errorDetails.message}`);
+    //             console.log("Error details: ", errorDetails);
+    //             return;
+    //         }
+    
+    //         const data = await response.json();
+    //         if (data?.data?.[0]?.url) {
+    //             setImage_url(data.data[0].url);
+    //         }
+    //     } catch (error) {
+    //         alert("An error occurred while generating the image.");
+    //     }
+    // };
+    const imageGenerator = async () => {
+        const prompt = inputRef.current.value.trim();
+        console.log("Prompt: ", prompt); // Log the prompt for debugging
+        if (prompt === "") {
+            alert("Please provide a valid prompt.");
+            return;
+        }
+    
+        try {
+            const response = await fetch("http://localhost:3001/api/generate-image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ prompt }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                alert(`Error: ${data.error || data.message}`);
+                console.error("Error details:", data);
+                return;
+            }
+    
+            if (data?.data?.[0]?.url) {
+                setImage_url(data.data[0].url);
+            } else {
+                alert("Image not found in response.");
+            }
+        } catch (error) {
+            console.error("Error generating image:", error);
+            alert("An error occurred while generating the image.");
+        }
+    };
+    
+    
+    
 
     useEffect(() => {
         const storedEmail = localStorage.getItem("loggedInUserEmail");
@@ -156,7 +237,7 @@ const ImageGenerator = () => {
                     className="search-input"
                     placeholder="Describe what you want to see"
                 />
-                <div className="generate-btn">Generate</div>
+                <div className="generate-btn" onClick={()=>{imageGenerator()}}>Generate</div>
             </div>
 
             {/* Need Help Section */}

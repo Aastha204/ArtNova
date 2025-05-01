@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const errorMiddleware = require('./Middlewares/errorMiddleware');
 const ImageUploadRouter = require('./Routes/ImageUploadRouter'); 
 const UserRoutes=require('./Routes/UserRoutes');
+const ImageGeneratorRouter=require('./Routes/ImageGenerator');
 const path = require('path');
 
 
@@ -26,6 +27,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use('/auth',AuthRouter)
 app.use('/api', ImageUploadRouter);
 app.use('/api',UserRoutes);
+app.use('/api',ImageGeneratorRouter);
 
 // Error handling middleware
 app.use(errorMiddleware);
