@@ -11,6 +11,7 @@ const ImageGenerator = () => {
     const [image_url, setImage_url] = useState("/");
     const [userEmail, setUserEmail] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [generating, setGenerating] = useState(false); // NEW STATE
     let inputRef = useRef(null);
 
     useEffect(() => {
@@ -70,6 +71,45 @@ const ImageGenerator = () => {
             }
         }
     };
+    
+    const generateImage = async () => {
+        if (inputRef.current.value==="") {
+            alert("Please enter a prompt!");
+            return;
+        }
+       
+        setGenerating(true); // Start loading
+        const openai_api_key = process.env.REACT_APP_OPENAI_API_KEY;
+
+        try {
+            console.log("API Key in use:", openai_api_key);
+            const response = await fetch("https://api.openai.com/v1/images/generations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer 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",
+                    "User-Agent":"Chrome" // 🔒 Replace with your actual key
+                },
+                body: JSON.stringify({
+                    prompt: `${inputRef.current.value}`,
+                    n: 1,
+                    size: "512x512",
+                }),
+            });
+
+            const data = await response.json();
+            if (data?.data && data.data[0]?.url) {
+                setImage_url(data.data[0].url);
+            } else {
+                alert("Image generation failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Image generation error:", error);
+            alert("An error occurred while generating the image.");
+        } finally {
+            setGenerating(false); // End loading
+        }
+    };
 
     // Initialize particles.js for animated background
     const particlesInit = useCallback(async (engine) => {
@@ -127,11 +167,13 @@ const ImageGenerator = () => {
 
             <div className="img-loading">
                 <div className="image-container">
-                    <img
-                        src={image_url === "/" ? default_image : image_url}
-                        alt="Generated"
-                        className="generated-image"
-                    />
+                <img
+  src={image_url === "/" ? default_image : image_url}
+  alt="Generated"
+  className={`generated-image ${image_url !== "/" ? "loaded" : ""}`}
+  onLoad={(e) => e.currentTarget.classList.add("loaded")}
+/>
+
 
                     <div className="image-overlay">
                         <div className="image-buttons">
@@ -156,7 +198,9 @@ const ImageGenerator = () => {
                     className="search-input"
                     placeholder="Describe what you want to see"
                 />
-                <div className="generate-btn">Generate</div>
+               <div className="generate-btn" onClick={() => generateImage(inputRef.current.value)}>
+                    {generating ? "Generating..." : "Generate"}
+                </div>
             </div>
 
             {/* Need Help Section */}

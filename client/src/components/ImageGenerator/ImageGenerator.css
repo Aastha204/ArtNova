@@ -4,7 +4,18 @@
     height: auto;
     min-height: 100vh;
     overflow-x: hidden; /* Prevent horizontal scrolling */
-
+    .generated-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        transition: opacity 0.6s ease-in-out;
+        opacity: 0;
+      }
+      
+      .generated-image.loaded {
+        opacity: 1;
+      }
+      
 .ai-image-generator {
     display: flex;
     flex-direction: column;
