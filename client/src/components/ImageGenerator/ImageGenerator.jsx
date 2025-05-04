@@ -6,6 +6,10 @@ import { loadSlim } from "tsparticles-slim";
 import Preloader from "./Preloader"; // Import Preloader
 import "./ImageGenerator.css";
 import default_image from "../Assets/1.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+import { handleError, handleSuccess } from "./utils";
+
 
 const ImageGenerator = () => {
 
@@ -14,48 +18,14 @@ const ImageGenerator = () => {
     const [loading, setLoading] = useState(true);
     let inputRef = useRef(null);
 
-    // const imageGenerator = async () => {
-    //     const prompt = inputRef.current.value.trim();
-    //     if (prompt === "") {
-    //         alert("Please provide a valid prompt.");
-    //         return;
-    //     }
-    
-    //     const requestBody = {
-    //         prompt: prompt,
-    //         n: 1,
-    //         size: "512x512",
-    //         model: "dall-e-2",
-    //     };
-    //     console.log("Request Body: ", requestBody);
-    
-    //     try {
-    //         const response = await fetch("https://api.openai.com/v1/images/generations", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 "Authorization":`Bearer ${process.env.OPENAI_API_KEY}`,
-    //                 "User-Agent": "Chrome",
-    //             },
-    //             body: JSON.stringify(requestBody),
-    //         });
-    
-    //         if (!response.ok) {
-    //             const errorDetails = await response.json();
-    //             alert(`Error: ${errorDetails.message}`);
-    //             console.log("Error details: ", errorDetails);
-    //             return;
-    //         }
-    
-    //         const data = await response.json();
-    //         if (data?.data?.[0]?.url) {
-    //             setImage_url(data.data[0].url);
-    //         }
-    //     } catch (error) {
-    //         alert("An error occurred while generating the image.");
-    //     }
-    // };
+    const [error, setError] = useState(null); // State to hold error messages
+
     const imageGenerator = async () => {
+        const userEmail = localStorage.getItem("loggedInUserEmail");
+        if (!userEmail) {
+            // Use Toastify for the notification
+            return handleError("Login required to generate images.");
+        }
         const prompt = inputRef.current.value.trim();
         console.log("Prompt: ", prompt); // Log the prompt for debugging
         if (prompt === "") {
@@ -90,7 +60,6 @@ const ImageGenerator = () => {
             alert("An error occurred while generating the image.");
         }
     };
-    
     
     
 
@@ -174,6 +143,9 @@ const ImageGenerator = () => {
     }
 
     return (
+        <>
+            <ToastContainer position="top-right" autoClose={3000} />
+       
         <div className="ai-image-generator">
             <Particles className="particles-bg" init={particlesInit} options={particlesOptions} />
 
@@ -251,6 +223,7 @@ const ImageGenerator = () => {
     </p>
 </div>
         </div>
+        </>
     );
 };
 

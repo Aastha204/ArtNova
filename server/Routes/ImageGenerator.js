@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
-
 dotenv.config();
 
 router.post("/generate-image", async (req, res) => {
@@ -11,26 +10,36 @@ router.post("/generate-image", async (req, res) => {
     console.log("Received prompt:", prompt);
 
     try {
-        const openaiRes = await fetch("https://api.openai.com/v1/images/generations", {
+        const response = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+                "Accept": "application/json",
+                "Authorization": `Bearer ${process.env.STABILITY_API_KEY}`,
             },
             body: JSON.stringify({
-                prompt,
-                n: 1,
-                size: "512x512",
-                model: "dall-e-2",
-            }),
-        });
+    text_prompts: [{ text: prompt }],
+    cfg_scale: 7,
+    height: 768,
+    width: 1344,
+    samples: 1,
+    steps: 30,
+}),
 
-        const data = await openaiRes.json();
-        if (!openaiRes.ok) {
-            return res.status(openaiRes.status).json(data);
+        });
+        
+
+        const result = await response.json();
+        console.log("Stability AI Response:", result);
+
+        if (response.ok && result.artifacts && result.artifacts[0]?.base64) {
+            const imageBase64 = result.artifacts[0].base64;
+            const imageUrl = `data:image/png;base64,${imageBase64}`;
+            res.json({ data: [{ url: imageUrl }] });
+        } else {
+            res.status(400).json({ error: result.message || "Image generation failed" });
         }
 
-        res.json(data);
     } catch (err) {
         console.error("Image generation failed:", err);
         res.status(500).json({ error: "Internal server error" });
