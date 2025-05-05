@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { handleError, handleSuccess } from "./utils";
 
 
+
 const ImageGenerator = () => {
 
     const [image_url, setImage_url] = useState("/");
@@ -205,9 +206,10 @@ const ImageGenerator = () => {
             </button>
 
             <div className="auth-buttons">
+            <Link to="/about" style={{ textDecoration: "none", color: "inherit" }} className="login-btn">Who We Are?</Link>
                 {userEmail ? (
                     <>
-                    <Link to="/about" className="nav-link glow-link">About</Link>
+                   
                         <Link to="/UserProfile">
                             <FaUserCircle className="user-icon" size={24} title={userEmail} />
                         </Link>
