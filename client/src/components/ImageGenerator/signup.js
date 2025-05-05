@@ -110,6 +110,7 @@ const SignupForm = () => {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
+     <div className="loginWrapper">
       {loading && (
         <div className="loading-overlay">
           <div className="spinner"></div>
@@ -148,6 +149,8 @@ const SignupForm = () => {
           </form>
         </div>
       </div>
+      </div>
+      
     </>
   );
 };

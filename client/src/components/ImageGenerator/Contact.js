@@ -1,16 +1,90 @@
 import { useState } from "react";
 import "./Contact.css";
+import { FaHome } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
-import { FaHome } from "react-icons/fa";  
 
 const ContactForm = () => {
   const [flipCard, setFlipCard] = useState(false);
- 
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validateForm = () => {
+    const phoneRegex = /^\d{10}$/;
+    const validateName = (name) => /^[a-zA-Z]+(?:[.'-]?[a-zA-Z]+)(?: [a-zA-Z]+(?:[.'-]?[a-zA-Z]+))*$/.test(name);
+const validatePassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,15}$/.test(password);
+const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|yahoo\.com|hotmail\.com|live\.com|icloud\.com)$/.test(email);
+
+    if(!validateName(formData.name)) {
+      toast.error("Please enter a valid name.");
+      return false;
+    }
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Phone number must be exactly 10 digits.");
+      return false;
+    }
+    if (!validateEmail(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return false;
+    }
+    if (formData.subject.trim().split(/\s+/).length <= 2) {
+      toast.error("Subject should be more than 2 words.");
+      return false;
+    }
+    if (formData.message.trim().split(/\s+/).length <= 10) {
+      toast.error("Message should be more than 10 words.");
+      return false;
+    }
+    return true;
+  };
+  
+
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      setFlipCard(true);
+      try {
+        const response = await fetch('http://localhost:3001/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (response.ok) {
+          toast.success("Message sent successfully!");
+          setFlipCard(true);
+        } else {
+          toast.error("Failed to send message. Please try again.");
+        }
+      } catch (error) {
+        toast.error("Error: " + error.message);
+      }
+    }
+  };
+  
+
   return (
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+  
     <div className="container">
       <div className="home-button1" onClick={() => window.location.href = "/"}>
-            <FaHome />
-          </div>
+        <FaHome />
+      </div>
+
       {/* Left Side - Contact Information */}
       <div className="contact-info">
         <h2>CONTACT US</h2>
@@ -28,37 +102,34 @@ const ContactForm = () => {
           <div className="back paper"></div>
           <div className="content">
             <div className="form-wrapper">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="top-wrapper">
                   <div className="input">
                     <label>Name</label>
-                    <input type="text" name="name" />
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} />
                   </div>
                   <div className="input">
                     <label>Phone</label>
-                    <input type="text" name="phone" />
+                    <input type="text" name="phone" value={formData.phone} onChange={handleChange} />
                   </div>
                   <div className="input">
                     <label>Email</label>
-                    <input type="text" name="_replyto" />
+                    <input type="text" name="email" value={formData.email} onChange={handleChange} />
                   </div>
                 </div>
                 <div className="bottom-wrapper">
                   <div className="input">
                     <label>Subject</label>
-                    <input type="text" name="_subject" />
+                    <input type="text" name="subject" value={formData.subject} onChange={handleChange} />
                   </div>
                   <div className="input">
                     <label>Message</label>
-                    <textarea rows="5" name="message"></textarea>
+                    <textarea rows="5" name="message" value={formData.message} onChange={handleChange}></textarea>
                   </div>
                   <div className="submit">
-                    <div
-                      className="submit-card"
-                      onClick={() => setFlipCard(!flipCard)}
-                    >
+                    <button type="submit" className="submit-card">
                       Send Mail
-                    </div>
+                    </button>
                   </div>
                 </div>
               </form>
@@ -68,6 +139,7 @@ const ContactForm = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

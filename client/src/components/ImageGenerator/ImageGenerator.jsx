@@ -6,13 +6,67 @@ import { loadSlim } from "tsparticles-slim";
 import Preloader from "./Preloader"; // Import Preloader
 import "./ImageGenerator.css";
 import default_image from "../Assets/1.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
+import { handleError, handleSuccess } from "./utils";
+
 
 const ImageGenerator = () => {
+
     const [image_url, setImage_url] = useState("/");
     const [userEmail, setUserEmail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [generating, setGenerating] = useState(false); // NEW STATE
     let inputRef = useRef(null);
+
+    const [error, setError] = useState(null); // State to hold error messages
+
+    const imageGenerator = async () => {
+        const userEmail = localStorage.getItem("loggedInUserEmail");
+        if (!userEmail) {
+            // Use Toastify for the notification
+            return handleError("Login required to generate images.");
+        }
+        const prompt = inputRef.current.value.trim();
+        console.log("Prompt: ", prompt); // Log the prompt for debugging
+        if (prompt === "") {
+            alert("Please provide a valid prompt.");
+            return;
+        }
+        setGenerating(true);
+        try {
+            const response = await fetch("http://localhost:3001/api/generate-image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ prompt }),
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                alert(`Error: ${data.error || data.message}`);
+                console.error("Error details:", data);
+                return;
+            }
+    
+            if (data?.data?.[0]?.url) {
+                setImage_url(data.data[0].url);
+                // inputRef.current.value = ""; 
+            } else {
+                alert("Image not found in response.");
+            }
+        } catch (error) {
+            console.error("Error generating image:", error);
+            alert("An error occurred while generating the image.");
+        }
+        finally {
+            setGenerating(false);
+        }
+    };
+    
+    
 
     useEffect(() => {
         const storedEmail = localStorage.getItem("loggedInUserEmail");
@@ -133,6 +187,14 @@ const ImageGenerator = () => {
     }
 
     return (
+        <>
+            <ToastContainer position="top-right" autoClose={3000} />
+            {/* {generating && (
+    <div className="overlay-loader">
+        <div className="spinner"></div>
+        <p className="loading-text">Generating your image...</p>
+    </div>
+)} */}
         <div className="ai-image-generator">
             <Particles className="particles-bg" init={particlesInit} options={particlesOptions} />
 
@@ -145,6 +207,7 @@ const ImageGenerator = () => {
             <div className="auth-buttons">
                 {userEmail ? (
                     <>
+                    <Link to="/about" className="nav-link glow-link">About</Link>
                         <Link to="/UserProfile">
                             <FaUserCircle className="user-icon" size={24} title={userEmail} />
                         </Link>
@@ -167,6 +230,13 @@ const ImageGenerator = () => {
 
             <div className="img-loading">
                 <div className="image-container">
+                {generating && (
+    <div className="overlay-loader">
+        <div className="spinner"></div>
+        <p className="loading-text">Generating your image...</p>
+    </div>
+)}
+                
                 <img
   src={image_url === "/" ? default_image : image_url}
   alt="Generated"
@@ -198,9 +268,7 @@ const ImageGenerator = () => {
                     className="search-input"
                     placeholder="Describe what you want to see"
                 />
-               <div className="generate-btn" onClick={() => generateImage(inputRef.current.value)}>
-                    {generating ? "Generating..." : "Generate"}
-                </div>
+                <div className="generate-btn" onClick={()=>{imageGenerator()}}>Generate</div>
             </div>
 
             {/* Need Help Section */}
@@ -214,6 +282,7 @@ const ImageGenerator = () => {
     </p>
 </div>
         </div>
+        </>
     );
 };
 

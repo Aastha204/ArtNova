@@ -135,6 +135,7 @@ const OTPForm = () => {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
+      <div className="loginWrapper">
       {loading && (
         <div className="loading-overlay">
           <div className="spinner"></div>
@@ -177,6 +178,7 @@ const OTPForm = () => {
             </div>
           </form>
         </div>
+      </div>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import SignupForm from "./components/ImageGenerator/signup";
 import OTP from './components/ImageGenerator/OTP';
 import UserProfile from "./components/ImageGenerator/UserProfile";
 import Contact from "./components/ImageGenerator/Contact";
+import About from "./components/ImageGenerator/About";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/verification" element={<OTP/>}/>
         <Route path="/UserProfile" element={<UserProfile/>}/>
         <Route path="/contact" element={<Contact/>}/>
+        <Route path="/about" element={<About />} />
       </Routes>
     </Router>
   );

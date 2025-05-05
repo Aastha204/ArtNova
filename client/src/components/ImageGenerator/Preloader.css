@@ -63,3 +63,26 @@
     opacity: 0;
     transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
 }
+
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .preloader-text {
+      font-size: 12vw;
+    }
+  
+    .tagline {
+      font-size: 5vw;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .preloader-text {
+      font-size: 14vw;
+    }
+  
+    .tagline {
+      font-size: 6vw;
+    }
+  }
+  

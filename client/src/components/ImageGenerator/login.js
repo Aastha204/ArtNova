@@ -144,6 +144,7 @@ const LoginForm = () => {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <canvas id="snowCanvas"></canvas>
+      <div className="loginWrapper">
       <div className="inFormBackground">
         <div className="circle"></div>
         <div className="circle"></div>
@@ -183,6 +184,7 @@ const LoginForm = () => {
                 </span>
               </div>
             </div>
+           
             <button type="submit" className="submitForm" disabled={loading}>
               {loading ? <span className="spinner"></span> : "Log In"}
             </button>
@@ -193,6 +195,7 @@ const LoginForm = () => {
             </p>
           </form>
         </div>
+      </div>
       </div>
     </>
   );

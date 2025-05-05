@@ -3,13 +3,24 @@
     padding: 0;
   }
   
-  body {
+  /* body {
     height: 100vh;
     display: flex;
-    overflow: hidden;
+ 
     align-items: center;
     justify-content: center;
     background-color: #060320;
+  } */
+  body {
+    background-color: #060320;
+    overflow-x: hidden;
+  }
+  .loginWrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
   }
   
   .inFormBackground {
