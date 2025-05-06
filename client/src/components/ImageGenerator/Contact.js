@@ -3,6 +3,7 @@ import "./Contact.css";
 import { FaHome } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Instagram, Linkedin, Mail, MapPin } from "lucide-react";
 
 
 const ContactForm = () => {
@@ -41,7 +42,7 @@ const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|ya
       toast.error("Subject should be more than 2 words.");
       return false;
     }
-    if (formData.message.trim().split(/\s+/).length <= 10) {
+    if (formData.message.trim().split(/\s+/).length <= 5) {
       toast.error("Message should be more than 10 words.");
       return false;
     }
@@ -78,6 +79,7 @@ const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|ya
 
   return (
     <>
+       <div className="contact-bg">
       <ToastContainer position="top-right" autoClose={3000} />
   
     <div className="container">
@@ -92,10 +94,42 @@ const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|ya
           We are sorry to hear that you are facing some problem. Our team is
           available to resolve your issues and will reply to you within 24
           hours. Till then, please send us your enquiry, and we will be happy
-          to assist you with full support. Till then, please enjoy :)
+          to assist you with full support. Till then, please co-operate :)
         </p>
+        <div className="social-icons mt-6">
+  <a
+    href="https://linkedin.com/in/yourprofile"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="icon-link"
+  >
+    <Linkedin size={28} />
+  </a>
+  <a
+    href="https://instagram.com/yourusername"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="icon-link"
+  >
+    <Instagram size={28} />
+  </a>
+  <a
+    href="mailto:chhabraashita4@gmail.com"
+    className="icon-link"
+  >
+    <Mail size={28} />
+  </a>
+  <a
+    href="https://maps.app.goo.gl/a6cVmBWqf51GL6VT8"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="icon-link"
+  >
+    <MapPin size={28} />
+  </a>
+</div>
       </div>
-
+     
       {/* Right Side - Contact Form */}
       <div className="contact-wrapper">
         <div className={`envelope ${flipCard ? "active" : ""}`}>
@@ -138,6 +172,7 @@ const validateEmail = (email) => /^[a-zA-Z0-9._%+-]+@(gmail\.com|outlook\.com|ya
           <div className="front paper"></div>
         </div>
       </div>
+    </div>
     </div>
     </>
   );
