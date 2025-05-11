@@ -2,8 +2,13 @@ import React from "react";
 import Wave from "react-wavify";
 import "./SubscribePage.css";
 import { FaHome } from "react-icons/fa";  
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SubscribePage = () => {
+  const navigate = useNavigate();
   const plans = [
     {
       name: "Basic",
@@ -40,8 +45,72 @@ const SubscribePage = () => {
     },
   ];
 
+  const handleSubscribe = async (planType) => {
+    const userId = localStorage.getItem("loggedInUserId");
+    if (!userId) {
+      toast.error(
+        <>
+          Please log in to subscribe{" "}
+          <span
+            style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            Login here
+          </span>
+        </>
+      );
+      return;
+    }
+  
+    try {
+      console.log("Sending subscription for:", { userId, planType });
+      const res = await axios.post("http://localhost:3001/api/subscribe", {
+        userId,
+        planType,
+      });
+  
+      const { order } = res.data;
+      console.log("Razorpay Key ID:",process.env.REACT_APP_KEY_ID,);
+
+  
+      const options = {
+       key: process.env.REACT_APP_KEY_ID, // or process.env.REACT_APP_KEY_ID
+        amount: order.amount,
+        currency: "INR",
+        name: "ArtNova",
+        description: `Subscription: ${planType}`,
+        order_id: order.id,
+        handler: async function (response) {
+          const verifyRes = await axios.post("http://localhost:3001/api/verify", {
+            userId,
+            planType,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+  
+          // alert(verifyRes.data.message);
+          toast.success(verifyRes.data.message);
+        },
+        theme: { color: "#f429f2" },
+      };
+  
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (err) {
+      console.error("Subscription error", err.response?.data || err.message);
+      // alert(err.response?.data?.message || "Subscription failed.");
+      toast.error(err.response?.data?.message || "Subscription failed.");
+
+
+
+    }
+  };
+  
+
   return (
     <div className="subscribe-page">
+     <ToastContainer />
        <div className="home-button1" onClick={() => window.location.href = "/"}>
         <FaHome />
       </div>
@@ -99,7 +168,7 @@ const SubscribePage = () => {
                 <li key={i}>{feature}</li>
               ))}
             </ul>
-            <button className="plan-subscribe-btn">Subscribe</button>
+            <button className="plan-subscribe-btn"  onClick={() => handleSubscribe(plan.name, plan.amount)}>Subscribe</button>
           </div>
         ))}
       </div>

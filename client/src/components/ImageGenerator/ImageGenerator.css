@@ -239,7 +239,7 @@
 .image-buttons {
     display: flex;
     margin-top: 3px;;
-    gap: 10px; /* Adjust the spacing between buttons */
+    gap: 30px; /* Adjust the spacing between buttons */
     justify-content: center; /* Center align the buttons */
     align-items: center;
 }
@@ -350,7 +350,7 @@
 /* Help Section Styling */
 .help-section {
     position: absolute;
-    bottom: 30px; /* Move it a little up from the bottom */
+    bottom: 30px; 
     left: 50%;
     transform: translateX(-50%);
     font-size: 16px;
@@ -380,7 +380,44 @@
 .contact-icon {
     font-size: 2px;
     color: #f429f2;
-    display: inline-flex; /* Align with text */
+    /* display: inline-flex; Align with text */
     align-items: center;
     margin-top: 2px; /* Slight adjustment if needed */
 }
+/* For large screens, show the "Who We Are?" button */
+.who-we-are-btn {
+    display: inline-block;
+    transition: transform 0.3s ease, color 0.3s ease, font-size 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Hover effect */
+.who-we-are-btn:hover {
+    transform: translateY(-5px); /* Moves the button slightly up */
+    color: rgb(145, 13, 123); /* Adds a pink shade on hover */
+    font-size: 17px; /* Slightly increases the font size */
+    text-shadow: 0 0 19px rgb(116, 12, 98), 0 0 20px rgb(150, 24, 129); /* Glowing effect */
+}
+
+/* For smaller screens, hide the "Who We Are?" button and show the profile icon link */
+.profile-icon-link {
+    display: none;
+}
+
+/* For small screens, show the profile icon instead of the Who We Are button */
+@media (max-width: 768px) {
+    .who-we-are-btn {
+        display: none;
+    }
+
+    .profile-icon-link {
+        display: inline-block; /* Shows the profile icon link */
+    }
+
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Other existing CSS... */

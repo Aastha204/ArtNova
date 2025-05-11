@@ -8,6 +8,7 @@ const ImageUploadRouter = require('./Routes/ImageUploadRouter');
 const UserRoutes=require('./Routes/UserRoutes');
 const ImageGeneratorRouter=require('./Routes/ImageGenerator');
 const ContactRouter=require('./Routes/Contact');
+const Subscribe=require('./Routes/PaymentRoute');
 const path = require('path');
 
 
@@ -30,6 +31,7 @@ app.use('/api', ImageUploadRouter);
 app.use('/api',UserRoutes);
 app.use('/api',ImageGeneratorRouter);
 app.use('/api',ContactRouter);
+app.use('/api',Subscribe);
 
 // Error handling middleware
 app.use(errorMiddleware);
