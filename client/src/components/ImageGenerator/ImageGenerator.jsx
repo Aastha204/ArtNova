@@ -100,9 +100,13 @@ const ImageGenerator = () => {
 
 const imageGenerator = async () => {
     const userEmail = localStorage.getItem("loggedInUserEmail");
+    const razorpayOrderId = localStorage.getItem("razorpay_order_id");
     if (!userEmail) {
       return handleError("Login required to generate images.");
     }
+    if (!razorpayOrderId) {
+return handleError("Subscription required to generate images.");
+}
   
     const prompt = inputRef.current.value.trim();
     if (prompt === "") {

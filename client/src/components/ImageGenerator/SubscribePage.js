@@ -97,6 +97,7 @@ const SubscribePage = () => {
   
       const razor = new window.Razorpay(options);
       razor.open();
+      localStorage.setItem("razorpay_order_id", order.id);
     } catch (err) {
       console.error("Subscription error", err.response?.data || err.message);
       // alert(err.response?.data?.message || "Subscription failed.");
